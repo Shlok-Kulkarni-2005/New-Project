@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient, OperatorProductUpdate } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import ExcelJS from 'exceljs';
 
 const prisma = new PrismaClient();

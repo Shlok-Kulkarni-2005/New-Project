@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useMemo, useEffect } from 'react';
-import { Menu, X, Package, Calendar, Truck, Eye, Search, RefreshCw } from 'lucide-react';
+import { Menu, X, Package, Calendar, Search, RefreshCw } from 'lucide-react';
 import Sidebar from '../../components/sidebarm';
 
 // Interface for dispatched item data
@@ -82,42 +82,6 @@ export default function DispatchedPage(): React.ReactElement {
     // Cleanup interval on component unmount
     return () => clearInterval(interval);
   }, []);
-
-  // Get today's date in YYYY-MM-DD format
-  const getTodayDate = (): string => {
-    return new Date().toISOString().split('T')[0];
-  };
-
-  // Calculate totals for today's dispatches (real-time from todayDispatchedItems)
-  const todayTotals = useMemo(() => {
-    return {
-      totalQuantity: todayDispatchedItems.reduce((sum, item) => sum + item.quantity, 0),
-      totalCost: todayDispatchedItems.reduce((sum, item) => sum + item.cost, 0),
-      totalProducts: todayDispatchedItems.length // Count of unique items instead of total quantity
-    };
-  }, [todayDispatchedItems]);
-
-  // Calculate monthly dispatches (real-time from all dispatchedItems)
-  const monthlyDispatches = useMemo(() => {
-    const today = new Date();
-    const currentMonth = today.getMonth();
-    const currentYear = today.getFullYear();
-
-    return dispatchedItems.filter(item => {
-      const itemDate = new Date(item.date);
-      return itemDate.getMonth() === currentMonth && 
-             itemDate.getFullYear() === currentYear;
-    });
-  }, [dispatchedItems]);
-
-  // Calculate monthly totals (real-time from monthlyDispatches)
-  const monthlyTotals = useMemo(() => {
-    return {
-      totalQuantity: monthlyDispatches.reduce((sum, item) => sum + item.quantity, 0),
-      totalCost: monthlyDispatches.reduce((sum, item) => sum + item.cost, 0),
-      totalProducts: monthlyDispatches.length // Count of unique items instead of total quantity
-    };
-  }, [monthlyDispatches]);
 
   const handleMenuClick = (): void => {
     setSidebarOpen(true);
@@ -229,7 +193,7 @@ export default function DispatchedPage(): React.ReactElement {
               : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
-          Today's RFD
+          Today&apos;s RFD
         </button>
         <button
           onClick={() => setActiveSection('history')}
@@ -269,7 +233,7 @@ export default function DispatchedPage(): React.ReactElement {
                   <Package className="w-4 h-4 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500">Today's RFD (Total Quantity)</p>
+                  <p className="text-xs text-gray-500">Today&apos;s RFD (Total Quantity)</p>
                   <p className="text-lg font-bold text-gray-900">{totalTodayRFDQuantity}</p>
                 </div>
               </div>
@@ -280,7 +244,7 @@ export default function DispatchedPage(): React.ReactElement {
                   <Package className="w-4 h-4 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500">Today's Unique Items</p>
+                  <p className="text-xs text-gray-500">Today&apos;s Unique Items</p>
                   <p className="text-lg font-bold text-gray-900">{uniqueTodayRFDProducts}</p>
                 </div>
               </div>
@@ -318,7 +282,7 @@ export default function DispatchedPage(): React.ReactElement {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base font-semibold text-gray-900">
-              {activeSection === 'today' ? "Today's RFD" : 'RFD History'}
+              {activeSection === 'today' ? "Today&apos;s RFD" : 'RFD History'}
             </h3>
             <span className="text-sm text-gray-500">
               {activeSection === 'today' ? filteredTodayRFD.length : filteredHistoryRFD.length} items

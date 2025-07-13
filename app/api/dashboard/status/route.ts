@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -17,7 +17,7 @@ export async function GET() {
 
     // Group jobs by productId and keep only the latest job for each product
     const latestJobByProduct: { [productId: string]: any } = {};
-    jobs.forEach((job: any) => {
+    jobs.forEach((job) => {
       const productId = job.product.id;
       if (
         !latestJobByProduct[productId] ||
@@ -29,8 +29,8 @@ export async function GET() {
 
     // Categorize products
     const liveProducts = Object.values(latestJobByProduct)
-      .filter((job: any) => job.state === 'ON')
-      .map((job: any) => ({
+      .filter((job) => job.state === 'ON')
+      .map((job) => ({
         id: job.product.id.toString(),
         name: job.product.name,
         process: job.machine.name,
@@ -41,8 +41,8 @@ export async function GET() {
       }));
 
     const pastProducts = Object.values(latestJobByProduct)
-      .filter((job: any) => job.state === 'OFF')
-      .map((job: any) => ({
+      .filter((job) => job.state === 'OFF')
+      .map((job) => ({
         id: job.product.id.toString(),
         name: job.product.name,
         process: job.machine.name,

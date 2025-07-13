@@ -16,7 +16,7 @@ export default function ForgotPasswordPage() {
         body: JSON.stringify({ email }),
       });
       setSubmitted(true);
-    } catch (err) {
+    } catch {
       setSubmitted(true); // Always show generic message
     } finally {
       setLoading(false);

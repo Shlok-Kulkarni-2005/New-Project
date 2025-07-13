@@ -59,8 +59,8 @@ export async function GET(req: NextRequest) {
       success: true,
       lifecycle 
     }, { status: 200 });
-  } catch (error) {
-    console.error('Error fetching product lifecycle:', error);
+  } catch {
+    console.error('Error fetching product lifecycle');
     return NextResponse.json({ 
       success: false, 
       error: 'Failed to fetch product lifecycle' 
@@ -235,8 +235,8 @@ export async function POST(req: NextRequest) {
       reason: reason || 'manual_action',
       timestamp: new Date().toISOString(),
     }, { status: 200 });
-  } catch (error) {
-    console.error('Error updating product lifecycle:', error);
+  } catch {
+    console.error('Error updating product lifecycle');
     return NextResponse.json({ 
       success: false, 
       error: 'Failed to update product lifecycle' 

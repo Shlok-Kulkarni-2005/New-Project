@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, ChevronDown, X } from 'lucide-react';
 import Sidebar from '../../components/sidebarm';
-import dayjs from 'dayjs';
+
 
 // Type definitions
 interface Machine {
@@ -21,7 +21,7 @@ interface Product {
   state: 'ON' | 'OFF';
 }
 
-type ViewType = 'machine' | 'product' | 'details';
+
 type FilterType = 'Machine/Process No' | 'Product Type';
 
 interface CustomDropdownProps {
@@ -36,7 +36,7 @@ export default function WorkPanelInterface() {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [currentView, setCurrentView] = useState<'live' | 'past'>('live');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [selectedFilter, setSelectedFilter] = useState<FilterType>('Machine/Process No');
+
   const [productData, setProductData] = useState<Product[]>([]);
   const [allJobs, setAllJobs] = useState<any[]>([]);
   const [now, setNow] = useState(Date.now());
@@ -103,10 +103,7 @@ export default function WorkPanelInterface() {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const filterOptions: FilterType[] = [
-    'Machine/Process No',
-    'Product Type',
-  ];
+
 
   // Machine/Process data
   const machineData: Machine[] = [
@@ -117,11 +114,7 @@ export default function WorkPanelInterface() {
     { id: 5, name: 'CNC Finish', status: 'ON', statusColor: 'green' }
   ];
 
-  // Function to parse date string to Date object
-  const parseDate = (dateString: string): Date => {
-    const [day, month, year] = dateString.split('/').map(Number);
-    return new Date(year, month - 1, day);
-  };
+
 
   // Ensure live and past products are mutually exclusive
   const getLiveProducts = (): Product[] => {
@@ -132,9 +125,7 @@ export default function WorkPanelInterface() {
     return productData.filter(product => product.state === 'OFF');
   };
 
-  const handleMenuClick = (): void => {
-    setSidebarOpen(true);
-  };
+
 
   const getStatusColor = (status: Machine['status']): string => {
     switch (status) {
@@ -225,7 +216,8 @@ export default function WorkPanelInterface() {
     }
   };
 
-  const CustomDropdown = ({ label, value, options, onChange }: CustomDropdownProps) => {
+
+    const CustomDropdown = ({ label, value, options, onChange }: CustomDropdownProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -501,12 +493,6 @@ export default function WorkPanelInterface() {
         </div>
       </div>
     );
-  };
-
-  const renderContent = () => {
-    if (selectedProduct) return renderDetailsView();
-    if (selectedFilter === 'Product Type') return renderProductList(productData);
-    return renderMachineView();
   };
 
   return (

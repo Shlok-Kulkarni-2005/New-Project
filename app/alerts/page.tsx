@@ -136,7 +136,7 @@ export default function SeeAlertsPage() {
           }`}
         >
           <Clock className="w-4 h-4 mr-2" />
-          Today's Alerts
+          Today&apos;s Alerts
           {isAuthenticated && unreadCount > 0 && (
             <span className="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
               {unreadCount}
@@ -165,7 +165,7 @@ export default function SeeAlertsPage() {
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-gray-400 text-xl md:text-2xl">🔔</span>
                 </div>
-                <h3 className="text-gray-500 font-medium text-sm md:text-base mb-2">No today's alerts</h3>
+                <h3 className="text-gray-500 font-medium text-sm md:text-base mb-2">No today&apos;s alerts</h3>
                 <p className="text-gray-400 text-xs md:text-sm">
                   All systems are running smoothly
                 </p>

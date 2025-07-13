@@ -40,7 +40,7 @@ export default function ResetPasswordClient() {
       } else {
         setError(data.error || "Password reset failed.");
       }
-    } catch (err) {
+    } catch {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);

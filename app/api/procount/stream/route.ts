@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { broadcastProductCount } from '../stream';
+
 
 export async function GET(req: NextRequest) {
   const stream = new ReadableStream({

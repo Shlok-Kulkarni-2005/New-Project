@@ -5,7 +5,7 @@ import { getCurrentOperatorId } from '../../lib/operator-auth';
 const prisma = new PrismaClient();
 
 // Get unread alert count for the current operator
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const operatorId = await getCurrentOperatorId();
     
@@ -20,13 +20,13 @@ export async function GET(req: NextRequest) {
       },
     });
     return NextResponse.json({ success: true, unreadCount });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ success: false, error: 'Failed to fetch unread count' }, { status: 500 });
   }
 }
 
 // Mark alerts as read for the current operator
-export async function POST(req: NextRequest) {
+export async function POST() {
   try {
     const operatorId = await getCurrentOperatorId();
     
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       },
     });
     return NextResponse.json({ success: true, message: 'Alerts marked as read.' });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ success: false, error: 'Failed to mark alerts as read' }, { status: 500 });
   }
 } 

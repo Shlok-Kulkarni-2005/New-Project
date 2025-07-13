@@ -66,7 +66,7 @@ export default function SendAlertsPage() {
         } else {
           setNotification("Failed to send alert.");
         }
-      } catch (err) {
+      } catch {
         setNotification("Failed to send alert.");
       }
       setTimeout(() => setNotification(""), 2000);

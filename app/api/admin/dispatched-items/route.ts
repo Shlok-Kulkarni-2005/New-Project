@@ -183,7 +183,7 @@ export async function GET() {
 // POST: Create a new dispatched item
 export async function POST(req: NextRequest) {
   try {
-    const { product, quantity, destination, notes } = await req.json();
+    const { product, destination } = await req.json();
 
     if (!product || !destination) {
       return NextResponse.json({ 

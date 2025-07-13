@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -19,115 +13,114 @@ model User {
   password  String
   name      String
   createdAt DateTime @default(now())
-  // ... other fields
+  otps      OTP[]
+  passwordResetTokens PasswordResetToken[]
 }
 
 model OTP {
-  id Int @id @default(autoincrement())
-
+  id        Int      @id @default(autoincrement())
   userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   code      String
   expiresAt DateTime
   used      Boolean  @default(false)
 }
 
 model PasswordResetToken {
-  id Int @id @default(autoincrement())
-
+  id        Int      @id @default(autoincrement())
   userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   token     String   @unique
   expiresAt DateTime
   used      Boolean  @default(false)
 }
 
 model Operator {
-  id             Int      @id @default(autoincrement())
-  phone          String   @unique
+  id             Int                     @id @default(autoincrement())
+  phone          String                  @unique
   username       String?
   profileImage   String?
-  createdAt      DateTime @default(now())
+  createdAt      DateTime                @default(now())
+  alertStatuses  OperatorAlertStatus[]
   otps           OperatorOTP[]
   productUpdates OperatorProductUpdate[]
-  alertStatuses  OperatorAlertStatus[]
 }
 
 model OperatorOTP {
-  id         Int       @id @default(autoincrement())
-  operator   Operator  @relation(fields: [operatorId], references: [id])
+  id         Int      @id @default(autoincrement())
   operatorId Int
   code       String
   expiresAt  DateTime
-  used       Boolean   @default(false)
+  used       Boolean  @default(false)
+  operator   Operator @relation(fields: [operatorId], references: [id])
 }
 
 model Alert {
-  id        Int      @id @default(autoincrement())
-  senderId  Int?     // Manager user id (optional, if you want to track sender)
-  message   String
-  icon      String?  // Optional icon for the alert
-  createdAt DateTime @default(now())
+  id         Int                   @id @default(autoincrement())
+  senderId   Int?
+  message    String
+  icon       String?
+  createdAt  DateTime              @default(now())
   recipients OperatorAlertStatus[]
 }
 
 model Machine {
   id     Int    @id @default(autoincrement())
   name   String
-  status String // e.g., "ON", "OFF", etc.
+  status String
   jobs   Job[]
 }
 
 model Product {
-  id   Int    @id @default(autoincrement())
-  name String
-  jobs Job[]
+  id           Int           @id @default(autoincrement())
+  name         String
+  jobs         Job[]
   productCount ProductCount?
 }
 
 model Job {
   id        Int      @id @default(autoincrement())
-  machine   Machine  @relation(fields: [machineId], references: [id])
   machineId Int
-  product   Product  @relation(fields: [productId], references: [id])
   productId Int
   state     String
   stage     String
   createdAt DateTime @default(now())
+  machine   Machine  @relation(fields: [machineId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
 }
 
 model ProductCount {
   id        Int      @id @default(autoincrement())
-  product   Product  @relation(fields: [productId], references: [id])
-  productId Int
+  productId Int      @unique
   count     Int      @default(0)
   machine   String
   stage     String
   state     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([productId])
+  product   Product  @relation(fields: [productId], references: [id])
 }
 
 model OperatorProductUpdate {
   id             Int      @id @default(autoincrement())
   operatorId     Int
-  operator       Operator @relation(fields: [operatorId], references: [id])
   product        String
   processSteps   Json
   dispatchStatus String
   dispatchedCost Float
-  quantity       Int      @default(1)
   createdAt      DateTime @default(now())
   archived       Boolean  @default(false)
+  quantity       Int      @default(1)
+  operator       Operator @relation(fields: [operatorId], references: [id])
 }
 
 model OperatorAlertStatus {
-  id          Int       @id @default(autoincrement())
-  operator    Operator  @relation(fields: [operatorId], references: [id], onDelete: Cascade)
-  operatorId  Int
-  alert       Alert     @relation(fields: [alertId], references: [id], onDelete: Cascade)
-  alertId     Int
-  read        Boolean   @default(false)
+  id         Int      @id @default(autoincrement())
+  operatorId Int
+  alertId    Int
+  read       Boolean  @default(false)
+  alert      Alert    @relation(fields: [alertId], references: [id], onDelete: Cascade)
+  operator   Operator @relation(fields: [operatorId], references: [id], onDelete: Cascade)
 
   @@unique([operatorId, alertId])
 }

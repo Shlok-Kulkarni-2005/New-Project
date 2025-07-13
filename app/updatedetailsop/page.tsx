@@ -49,7 +49,7 @@ interface UpdateData {
 
 export default function UpdateDetailsPage(): React.ReactElement {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [selectedProduct, setSelectedProduct] = useState<string>('');
+
   const [procountProducts, setProcountProducts] = useState<ProcountProduct[]>([]);
   const [processSteps, setProcessSteps] = useState<ProcessSteps>({
     deburring: true,
@@ -59,7 +59,7 @@ export default function UpdateDetailsPage(): React.ReactElement {
   const [selectedProductId, setSelectedProductId] = useState<string | number | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const [quantityInput, setQuantityInput] = useState<string>('1');
-  const [realtimeStatus, setRealtimeStatus] = useState<'connected' | 'disconnected' | 'connecting'>('connecting');
+
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
 
   // Auto-hide messages after 5 seconds
@@ -147,12 +147,10 @@ export default function UpdateDetailsPage(): React.ReactElement {
 
         eventSource.onopen = () => {
           console.log('SSE connection opened successfully for procount');
-          setRealtimeStatus('connected');
         };
 
         eventSource.onerror = (error) => {
           console.log('SSE connection error (this is normal when page is closed):', error);
-          setRealtimeStatus('disconnected');
           if (eventSource) {
             eventSource.close();
             eventSource = null;
@@ -180,7 +178,6 @@ export default function UpdateDetailsPage(): React.ReactElement {
           eventSource.close();
           eventSource = null;
         }
-        setRealtimeStatus('disconnected');
       } else {
         // Page is visible again, try to reconnect
         setTimeout(connectToStream, 2000);

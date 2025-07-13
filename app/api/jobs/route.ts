@@ -19,7 +19,7 @@ export async function GET() {
       orderBy: { createdAt: 'desc' },
     });
     return NextResponse.json({ jobs }, { status: 200 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch jobs' }, { status: 500 });
   }
 }
@@ -187,9 +187,9 @@ export async function POST(req: NextRequest) {
       count: jobs.length,
       message: `Successfully created ${jobs.length} job(s) for ${dbProduct.name}`
     }, { status: 201 });
-  } catch (error) {
-    console.error('Job upload failed:', error);
-    return NextResponse.json({ error: 'Failed to add job', details: error instanceof Error ? error.message : error }, { status: 500 });
+  } catch {
+    console.error('Job upload failed');
+    return NextResponse.json({ error: 'Failed to add job' }, { status: 500 });
   }
 }
 
@@ -197,7 +197,7 @@ export async function DELETE() {
   try {
     await prisma.job.deleteMany({});
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to clear jobs' }, { status: 500 });
   }
 } 

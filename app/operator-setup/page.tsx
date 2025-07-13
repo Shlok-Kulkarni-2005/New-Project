@@ -36,7 +36,7 @@ export default function OperatorSetupPage() {
       } else {
         setError(data.error || "Account setup failed");
       }
-    } catch (err) {
+    } catch {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);

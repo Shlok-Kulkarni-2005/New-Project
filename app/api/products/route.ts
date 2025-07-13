@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { broadcastProduct } from './stream';
+
 
 const prisma = new PrismaClient();
 
@@ -24,7 +24,7 @@ export async function GET() {
       status: p.jobs[0]?.state || '',
     }));
     return NextResponse.json({ products: result }, { status: 200 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
   }
 } 

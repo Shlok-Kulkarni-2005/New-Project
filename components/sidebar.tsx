@@ -10,7 +10,6 @@ import {
   Clock,
   LogOut,
   ArrowLeft,
-  Moon,
   Languages,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";

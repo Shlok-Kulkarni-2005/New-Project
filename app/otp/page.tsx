@@ -35,7 +35,7 @@ export default function OTPPage() {
       } else {
         setError(data.error || "OTP verification failed");
       }
-    } catch (err) {
+    } catch {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);

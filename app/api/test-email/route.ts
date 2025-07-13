@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendEmail } from '../../lib/email'; // adjust path if needed
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     await sendEmail({
       to: process.env.EMAIL_USER!, // send to yourself for testing

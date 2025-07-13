@@ -155,7 +155,7 @@ export default function AddJobsForm() {
         setIsValidating(false);
         return false;
       }
-    } catch (error) {
+    } catch {
       setValidationMessage('❌ Error validating product status');
       setIsValidating(false);
       return false;
@@ -191,7 +191,7 @@ export default function AddJobsForm() {
         body: JSON.stringify(jobData)
       });
       if (res.ok) {
-        const result = await res.json();
+        await res.json();
         // Optionally show a success message or reset form
         setSelectedProduct('');
         setSelectedStage('Milling');
@@ -205,7 +205,7 @@ export default function AddJobsForm() {
         const errorData = await res.json();
         setMessage({ text: `Failed to add job: ${errorData.error || 'Unknown error'}`, type: 'error' });
       }
-    } catch (err) {
+    } catch {
       setMessage({ text: 'Failed to add job.', type: 'error' });
     }
   };

@@ -114,8 +114,8 @@ export async function GET(request: NextRequest) {
             })}\n\n`;
             controller.enqueue(encoder.encode(updateMessage));
 
-          } catch (error) {
-            console.error('Error in live products stream update:', error);
+          } catch {
+            console.error('Error in live products stream update');
             // Don't send error messages to avoid controller issues
           }
         }, 30000); // Update every 30 seconds instead of 10
@@ -132,20 +132,20 @@ export async function GET(request: NextRequest) {
           }
         });
 
-      } catch (error) {
-        console.error('Error in live products stream:', error);
-        try {
-          const errorMessage = `data: ${JSON.stringify({
-            type: 'error',
-            error: 'Failed to initialize live products stream',
-            timestamp: new Date().toISOString()
-          })}\n\n`;
-          controller.enqueue(encoder.encode(errorMessage));
-          controller.close();
-        } catch (closeError) {
-          // Ignore errors when closing
+              } catch {
+          console.error('Error in live products stream');
+          try {
+            const errorMessage = `data: ${JSON.stringify({
+              type: 'error',
+              error: 'Failed to initialize live products stream',
+              timestamp: new Date().toISOString()
+            })}\n\n`;
+            controller.enqueue(encoder.encode(errorMessage));
+            controller.close();
+          } catch {
+            // Ignore errors when closing
+          }
         }
-      }
     }
   });
 

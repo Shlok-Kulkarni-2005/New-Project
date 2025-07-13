@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const productId = searchParams.get('productId');
 
-    let whereClause: any = {
+    const whereClause: Record<string, any> = {
       dispatchStatus: 'Dispatched',
     };
 

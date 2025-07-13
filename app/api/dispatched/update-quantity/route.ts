@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 // POST: Add or update dispatched product quantity
 export async function POST(req: NextRequest) {
   try {
-    const { product, quantity = 1, operatorId = 12345 } = await req.json();
+    const { product, operatorId = 12345 } = await req.json();
     
     if (!product) {
       return NextResponse.json({ 
