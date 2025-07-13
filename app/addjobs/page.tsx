@@ -74,7 +74,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 };
 
 export default function AddJobsForm() {
-  const [selectedMachine, setSelectedMachine] = useState<string>('Cutting MC/1');
+  const [selectedMachine, setSelectedMachine] = useState<string>('Cutting');
   const [selectedProduct, setSelectedProduct] = useState<string>('');
   const [selectedState, setSelectedState] = useState<string>('ON');
   const [selectedStage, setSelectedStage] = useState<string>('Milling');
@@ -196,7 +196,7 @@ export default function AddJobsForm() {
         setSelectedProduct('');
         setSelectedStage('Milling');
         setSelectedState('ON');
-        setSelectedMachine('Cutting MC/1');
+        setSelectedMachine('Cutting');
         setQuantity(1);
         setQuantityInput('1');
         setValidationMessage('');

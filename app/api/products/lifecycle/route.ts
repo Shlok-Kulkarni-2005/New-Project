@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
 
         updatedJob = await prisma.job.update({
           where: { id: parseInt(jobId) },
-          data: { state: 'OFF' },
+          data: { state: 'OFF', updatedAt: new Date() },
           include: {
             machine: true,
             product: true,
@@ -180,7 +180,7 @@ export async function POST(req: NextRequest) {
 
         updatedJob = await prisma.job.update({
           where: { id: parseInt(jobId) },
-          data: { state: newState },
+          data: { state: newState, updatedAt: new Date() },
           include: {
             machine: true,
             product: true,

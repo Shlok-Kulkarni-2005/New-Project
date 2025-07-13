@@ -82,8 +82,11 @@ export async function POST(req: NextRequest) {
       for (const jobToUpdate of jobsToUpdate) {
         const updatedJob = await prisma.job.update({
           where: { id: jobToUpdate.id },
-          data: { state: 'OFF' },
-          include: { machine: true, product: true },
+          data: { state: 'OFF', updatedAt: new Date() },
+          include: {
+            machine: true,
+            product: true,
+          },
         });
         jobs.push(updatedJob);
         broadcastJob(updatedJob);
@@ -98,7 +101,10 @@ export async function POST(req: NextRequest) {
             state,
             stage,
           },
-          include: { machine: true, product: true },
+          include: {
+            machine: true,
+            product: true,
+          },
         });
         jobs.push(job);
         broadcastJob(job);

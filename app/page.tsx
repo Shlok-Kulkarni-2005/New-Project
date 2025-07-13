@@ -13,7 +13,7 @@ const LandingPage: React.FC = () => {
       router.push('/loginpage');
     }, 1000); // This should match your CSS transition duration
   };
-  
+
   return (
     <div 
       className={`min-h-screen bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 flex items-center justify-center p-4 ${isVisible ? 'opacity-100' : 'opacity-0 transition-opacity duration-1000'}`}

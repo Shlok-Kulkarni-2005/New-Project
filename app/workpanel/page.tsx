@@ -365,20 +365,47 @@ export default function WorkPanelInterface() {
             timingInfo = `Running: ${formatDuration(now - start)}`;
           }
         } else {
-          let lastOnIdx = -1;
-          for (let i = jobs.length - 1; i >= 0; i--) {
-            if (jobs[i].state === 'OFF') {
-              lastOnIdx = jobs.slice(0, i).reverse().findIndex(j => j.state === 'ON');
-              if (lastOnIdx !== -1) {
-                lastOnIdx = i - 1 - lastOnIdx;
-                const onJob = jobs[lastOnIdx];
-                const offJob = jobs[i];
-                if (onJob && offJob) {
-                  const duration = new Date(offJob.createdAt).getTime() - new Date(onJob.createdAt).getTime();
+          // For past products: find ON job and OFF job, calculate duration
+          const sortedJobs = [...jobs].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+          
+          // Check if we have a single job that was updated from ON to OFF
+          if (jobs.length === 1 && jobs[0].state === 'OFF') {
+            const job = jobs[0];
+            const duration = new Date(job.updatedAt || job.createdAt).getTime() - new Date(job.createdAt).getTime();
+            
+            if (duration > 0) {
+              timingInfo = `Final: ${formatDuration(duration)}`;
+            } else {
+              // If duration is 0, it means the job was updated immediately
+              timingInfo = `Completed`;
+            }
+          } else {
+            // Multiple jobs - find the last OFF job and last ON job before it
+            const lastOffJob = sortedJobs.reverse().find(j => j.state === 'OFF');
+            
+            if (lastOffJob) {
+              // Find the last ON job before this OFF job
+              const jobsBeforeOff = sortedJobs.slice(sortedJobs.indexOf(lastOffJob) + 1);
+              const lastOnJob = jobsBeforeOff.reverse().find(j => j.state === 'ON');
+              
+              if (lastOnJob) {
+                // Standard calculation: OFF job time - ON job time
+                const offTime = new Date(lastOffJob.updatedAt || lastOffJob.createdAt).getTime();
+                const onTime = new Date(lastOnJob.createdAt).getTime();
+                const duration = offTime - onTime;
+                
+                if (duration > 0) {
                   timingInfo = `Final: ${formatDuration(duration)}`;
+                } else {
+                  timingInfo = `Total: ${formatDuration(0)}`;
                 }
-                break;
+              } else {
+                // No ON job found before OFF job
+                timingInfo = `Completed`;
               }
+            } else {
+              // Fallback
+              timingInfo = `Completed`;
             }
           }
         }
@@ -411,29 +438,65 @@ export default function WorkPanelInterface() {
   const renderDetailsView = () => {
     if (!selectedProduct) return null;
     const jobs = getJobsForProduct(selectedProduct.id);
-    // Calculate time
+    // Calculate time using standard logic
     let timeInfo = '';
+    
+
+    
     if (selectedProduct.state === 'ON') {
+      // For running products: now - last ON job createdAt
       const lastOnJob = [...jobs].reverse().find(j => j.state === 'ON');
       if (lastOnJob) {
         const start = new Date(lastOnJob.createdAt).getTime();
         timeInfo = `Running: ${formatDuration(now - start)}`;
       }
     } else {
-      let lastOnIdx = -1;
-      for (let i = jobs.length - 1; i >= 0; i--) {
-        if (jobs[i].state === 'OFF') {
-          lastOnIdx = jobs.slice(0, i).reverse().findIndex(j => j.state === 'ON');
-          if (lastOnIdx !== -1) {
-            lastOnIdx = i - 1 - lastOnIdx;
-            const onJob = jobs[lastOnIdx];
-            const offJob = jobs[i];
-            if (onJob && offJob) {
-              const duration = new Date(offJob.createdAt).getTime() - new Date(onJob.createdAt).getTime();
-              timeInfo = `Final: ${formatDuration(duration)}`;
-            }
-            break;
+      // For past products: find ON job and OFF job, calculate duration
+      const sortedJobs = [...jobs].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+      
+
+      
+                      // Check if we have a single job that was updated from ON to OFF
+        if (jobs.length === 1 && jobs[0].state === 'OFF') {
+          const job = jobs[0];
+          const createdAt = new Date(job.createdAt).getTime();
+          const updatedAt = new Date(job.updatedAt || job.createdAt).getTime();
+          const duration = updatedAt - createdAt;
+          
+          if (duration > 0) {
+            timeInfo = `Final: ${formatDuration(duration)}`;
+          } else {
+            // If duration is 0, it means the job was updated immediately
+            // Show a reasonable estimate or "Completed"
+            timeInfo = `Completed`;
           }
+      } else {
+        // Multiple jobs - find the last OFF job and last ON job before it
+        const lastOffJob = sortedJobs.reverse().find(j => j.state === 'OFF');
+        
+        if (lastOffJob) {
+          // Find the last ON job before this OFF job
+          const jobsBeforeOff = sortedJobs.slice(sortedJobs.indexOf(lastOffJob) + 1);
+          const lastOnJob = jobsBeforeOff.reverse().find(j => j.state === 'ON');
+          
+          if (lastOnJob) {
+            // Standard calculation: OFF job time - ON job time
+            const offTime = new Date(lastOffJob.updatedAt || lastOffJob.createdAt).getTime();
+            const onTime = new Date(lastOnJob.createdAt).getTime();
+            const duration = offTime - onTime;
+            
+            if (duration > 0) {
+              timeInfo = `Final: ${formatDuration(duration)}`;
+            } else {
+              timeInfo = `Total: ${formatDuration(0)}`;
+            }
+          } else {
+            // No ON job found before OFF job
+            timeInfo = `Completed`;
+          }
+        } else {
+          // Fallback
+          timeInfo = `Completed`;
         }
       }
     }
