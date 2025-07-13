@@ -1,0 +1,146 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  // ... other fields
+}
+
+model OTP {
+  id Int @id @default(autoincrement())
+
+  userId    Int
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+}
+
+model PasswordResetToken {
+  id Int @id @default(autoincrement())
+
+  userId    Int
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+}
+
+model Operator {
+  id             Int      @id @default(autoincrement())
+  phone          String   @unique
+  username       String?
+  profileImage   String?
+  createdAt      DateTime @default(now())
+  otps           OperatorOTP[]
+  productUpdates OperatorProductUpdate[]
+  alertStatuses  OperatorAlertStatus[]
+}
+
+model OperatorOTP {
+  id         Int       @id @default(autoincrement())
+  operator   Operator  @relation(fields: [operatorId], references: [id])
+  operatorId Int
+  code       String
+  expiresAt  DateTime
+  used       Boolean   @default(false)
+}
+
+model Alert {
+  id        Int      @id @default(autoincrement())
+  senderId  Int?     // Manager user id (optional, if you want to track sender)
+  message   String
+  icon      String?  // Optional icon for the alert
+  createdAt DateTime @default(now())
+  recipients OperatorAlertStatus[]
+}
+
+model Machine {
+  id     Int    @id @default(autoincrement())
+  name   String
+  status String // e.g., "ON", "OFF", etc.
+  jobs   Job[]
+}
+
+model Product {
+  id   Int    @id @default(autoincrement())
+  name String
+  jobs Job[]
+  productCount ProductCount?
+}
+
+model Job {
+  id        Int      @id @default(autoincrement())
+  machine   Machine  @relation(fields: [machineId], references: [id])
+  machineId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  state     String
+  stage     String
+  createdAt DateTime @default(now())
+}
+
+model ProductCount {
+  id        Int      @id @default(autoincrement())
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  count     Int      @default(0)
+  machine   String
+  stage     String
+  state     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productId])
+}
+
+model OperatorProductUpdate {
+  id             Int      @id @default(autoincrement())
+  operatorId     Int
+  operator       Operator @relation(fields: [operatorId], references: [id])
+  product        String
+  processSteps   Json
+  dispatchStatus String
+  dispatchedCost Float
+  quantity       Int      @default(1)
+  createdAt      DateTime @default(now())
+  archived       Boolean  @default(false)
+}
+
+model OperatorAlertStatus {
+  id          Int       @id @default(autoincrement())
+  operator    Operator  @relation(fields: [operatorId], references: [id], onDelete: Cascade)
+  operatorId  Int
+  alert       Alert     @relation(fields: [alertId], references: [id], onDelete: Cascade)
+  alertId     Int
+  read        Boolean   @default(false)
+
+  @@unique([operatorId, alertId])
+}
+
+model DailyDispatchStats {
+  id          Int      @id @default(autoincrement())
+  date        DateTime @unique @db.Date
+  totalAmount Float
+  totalCount  Int
+}
+
+model ReportDownload {
+  id           Int      @id @default(autoincrement())
+  reportName   String
+  downloadedAt DateTime @default(now())
+}
